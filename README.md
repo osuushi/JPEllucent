@@ -1,6 +1,7 @@
 **Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
 
-- [How?](#how)
+- [What does it do?](#what-does-it-do)
+- [How do I use it?](#how-do-i-use-it)
 	- [Compressing images with jpelcompress.js](#compressing-images-with-jpelcompressjs)
 		- [Installing](#installing)
 		- [Using](#using)
@@ -18,7 +19,16 @@
 	- [Quality](#quality)
 	- [Sprite layout](#sprite-layout)
 
-# How?
+# What does it do?
+
+JPEllucent lets you use lossy compression (via JPEG) on full color images with alpha channels. It
+does this by encoding the color and alpha data separately, and packing them into a JSON file.
+
+On the client side, the components are then decompressed and combined into a single image once more.
+
+[Here's a demo that shows off the results.](http://osuushi.github.io/jpeldemo/)
+
+# How do I use it?
 
 JPEllucent comes in two parts: jpelcompress.js and JPEllucent.js.
 
