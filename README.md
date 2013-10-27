@@ -22,7 +22,7 @@ JPEllucent comes in two parts: CompressJPEl.js and JPEllucent.js.
 
 ### Installing
 
-The easiest way to install is to run `sudo npm install -g https://github.com/osuushi/JPEllucent.git`.
+The easiest way to install is to run `sudo npm install -g git://github.com/osuushi/JPEllucent.git`.
 
 Note that this depends on ImageMagick 6.6.9 or later, which must be installed separately (earlier 
 versions may work, but have not been tested).
