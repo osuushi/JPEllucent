@@ -1,10 +1,10 @@
 **Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
 
 - [How?](#how)
-	- [jpelcompress.js](#jpelcompressjs)
+	- [Compressing images with jpelcompress.js](#compressing-images-with-jpelcompressjs)
 		- [Installing](#installing)
 		- [Using](#using)
-	- [JPEllucent.js](#jpellucentjs)
+	- [Decoding with JPEllucent.js](#decoding-with-jpellucentjs)
 - [Using the decoder](#using-the-decoder)
 	- [Adding images dynamically](#adding-images-dynamically)
 	- [Getting the raw data URI](#getting-the-raw-data-uri)
@@ -13,12 +13,16 @@
 - [Converter Requirements](#converter-requirements)
 - [Browser Support](#browser-support)
 - [Performance considerations](#performance-considerations)
+- [Considerations for sprite sheets](#considerations-for-sprite-sheets)
+	- [Using JPEllucent with CSS](#using-jpellucent-with-css)
+	- [Quality](#quality)
+	- [Sprite layout](#sprite-layout)
 
 # How?
 
 JPEllucent comes in two parts: jpelcompress.js and JPEllucent.js.
 
-## jpelcompress.js
+## Compressing images with jpelcompress.js
 
 ### Installing
 
@@ -46,7 +50,7 @@ image data is encoded in base64, so it will be even smaller (by about 30%) once 
 When used as a module, the `convert` method will pass the JPEl object (not stringified) to the
 callback you provide.
 
-## JPEllucent.js
+## Decoding with JPEllucent.js
 
 This is the decoder for the JSON files created by jpelcompress.js. It can be found at
 js/JPEllucent.js. It should be included in your HTML immediately before the closing `</body>` tag.
@@ -58,7 +62,7 @@ like this:
 
     <img data-jpel="logo.json">
 
-The JPEl library will automatically load logo.json and decode it. This will also work for
+The JPEllucent library will automatically load logo.json and decode it. This will also work for
 dynamically added image tags (see below for browser support).
 
 ## Adding images dynamically
@@ -81,8 +85,9 @@ will take different amounts of time to decode.
 
 # When should/shouldn't I use this?
 
-JPEl is effective for compressing images that are complex, or that have complex alpha channels. A
-good rule of thumb is this: if it looks like vector art, it will probably compress better as a PNG.
+JPEllucent is effective for compressing images that are complex, or that have complex alpha
+channels. A good rule of thumb is this: if it looks like vector art, it will probably compress
+better as a PNG.
 
 # Converter Requirements
 
@@ -91,17 +96,17 @@ good rule of thumb is this: if it looks like vector art, it will probably compre
 
 # Browser Support
 
-JPEl will work fully in any modern browser that supports canvas pixel manipulation and the
+JPEllucent will work fully in any modern browser that supports canvas pixel manipulation and the
 MutationObserver API.
 
 In browsers without adequate canvas support, the `JPEl.getFallbackURL` will be called to transform
 the JSON URL. By default, this simply changes the extension to "png". So if you keep your original
-PNG files next to the JPEl JSON files, the default behavior will serve them to older browsers. Of
-course, you can overwrite `JPEl.getFallbackURL` to return a different URL if needed.
+PNG files next to the JPEllucent JSON files, the default behavior will serve them to older browsers.
+Of course, you can overwrite `JPEl.getFallbackURL` to return a different URL if needed.
 
-If MutationObserver is not available, JPEl will not attempt to fetch images that are added after
-page load. If you need to support dynamically added images in browsers without MutationObserver,
-you have four options:
+If MutationObserver is not available, JPEllucent will not attempt to fetch images that are added
+after page load. If you need to support dynamically added images in browsers without
+MutationObserver, you have four options:
 
 1. Use a shim for MutationObserver.
 
@@ -120,9 +125,9 @@ will have no effect. This saves you from having to feature detect before calling
 
 #Performance considerations
 
-Because JPEl has to decode images on the client side using JavaScript, it may not be appropriate
-for very large images. There is a trade off of bandwidth and client side processing that you'll
-need to balance.
+Because JPEllucent has to decode images on the client side using JavaScript, it may not be
+appropriate for very large images. There is a trade off of bandwidth and client side processing that
+you'll need to balance.
 
 For the sake of templating, JPEllucent uses MutationObservers to watch for new `<img>` tags with a
 `data-jpel` attribute. This incurs a performance hit for all DOM modifications. If you are not
@@ -131,4 +136,36 @@ adding JPEl images to the DOM dynamically via templates, you can improve perform
 
 If you *are* using templates including JPEl images, you can also improve performance by disabling
 MutationObservers and then manually calling `JPEl.loadDOMImages(node)` where `node` is a node
-containing the newly added image elements. 
+containing the newly added image elements. You will need to do this whenever a new image is added
+or the `data-jpel` attribute of an image is changed.
+
+
+# Considerations for sprite sheets
+
+One obvious application for JPEllucent is for compressing sprite sheets. There are a couple of 
+considerations you'll need to account for when doing this:
+
+## Using JPEllucent with CSS
+
+The obvious difficulty with sprites and JPEllucent is that you cannot use jpelcompress's output as
+the URL for a CSS attribute. The workaround for this is to call `JPEl.loadImageToURI(url, callback)`
+and then use JavaScript to add a `<style>` element to the page, setting the background to the
+generated data URI. Of course, the rest of your sprite CSS can be static.
+
+## Quality
+
+As noted, JPEllucent excels for complex images. If your sprites are flat and smooth, you're probably
+better off sticking with PNG. Where this gets complicated is if you have both simple and complex
+sprites. In this case, you will have to use two separate sprite sheet images, and determine if this
+tradeoff is worth the better compression ratio from using JPEllucent.
+
+## Sprite layout
+
+It's not uncommon to see PNG sprite sheets with large areas of empty space. This makes sense; it
+lets you organize your sprites, and the empty space compresses well, so there's little cost.
+
+Unfortunately, this is not the case with JPEllucent. The decoder works by merging two separate
+images (one for color data, one for alpha data), and has no way of knowing if a large block of
+pixels is totally transparent. This may change in the future (by adding extra data at the encoding
+stage), but for now, you'll see a significant performance benefit if you ensure that your sprite
+sheets are compact.
