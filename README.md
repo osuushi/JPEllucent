@@ -1,7 +1,7 @@
 **Table of Contents**  *generated with [DocToc](http://doctoc.herokuapp.com/)*
 
 - [How?](#how)
-	- [CompressJPEl.js](#compressjpeljs)
+	- [jpelcompress.js](#jpelcompressjs)
 		- [Installing](#installing)
 		- [Using](#using)
 	- [JPEllucent.js](#jpellucentjs)
@@ -16,9 +16,9 @@
 
 # How?
 
-JPEllucent comes in two parts: CompressJPEl.js and JPEllucent.js.
+JPEllucent comes in two parts: jpelcompress.js and JPEllucent.js.
 
-## CompressJPEl.js
+## jpelcompress.js
 
 ### Installing
 
