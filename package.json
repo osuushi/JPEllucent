@@ -1,0 +1,16 @@
+{
+    "name": "JPEllucent",
+    "version": "0.1.0",
+    "description": "JPEG compression for transparent images in the browser.",
+    "bin": {
+        "jpelcompress": "./bin/jpelcompress"
+    },
+    "dependencies": {
+        "optimist": ">=0.6.0"
+    },
+    "main": "./js/jpelcompress",
+    "license": "MIT",
+    "engines": {
+        "node": ">=0.10.21"
+    }
+}

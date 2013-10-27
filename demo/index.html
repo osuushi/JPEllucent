@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JPEllucent Demo</title>
+    <style>
+        body {
+            background: url(background/graphy.png);
+            font-family: Verdana;
+        }
+        div.box {
+            width: 500px;
+            height: 550px;
+            float: left;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>Click and hold on any image to show the original version.</h1>
+
+        Dice image used under Creative Commons <a href = "https://creativecommons.org/licenses/by-sa/3.0/deed.en">CC BY-SA 3.0</a> (<a href="https://commons.wikimedia.org/wiki/File:PNG_transparency_demonstration_1.png">original source</a>)
+    </div>
+
+    <div class="box">
+        <h3>Original (uncompressed)</h3>
+        <img src="dice.png"><br>
+        Size: 168.1KB (optimized with pngout)
+    </div>
+
+    <div class="box">
+        <h3>Color: 99; Alpha: 99</h3>
+        <img data-jpel="dice9999.json"><br>
+        Size: 211.4KB (155.7KB gzipped = 93%)
+    </div>
+
+    <div class="box">
+        <h3>Color: 90; Alpha: 90</h3>
+        <img data-jpel="dice9090.json"><br>
+        Size: 84.7KB (61.4KB gzipped = 37%)
+    </div>
+
+    <div class="box">
+        <h3>Color: 85; Alpha: 60 (default)</h3>
+        <img data-jpel="dice8560.json"><br>
+        Size: 46.8KB (33.7KB gzipped = 20%)
+    </div>
+
+    <div class="box">
+        <h3>Color: 60; Alpha: 30</h3>
+        <img data-jpel="dice6030.json"><br>
+        Size: 29.1KB (20.7KB gzipped = 12%)
+    </div>
+
+    <div class="box">
+        <h3>Color: 20; Alpha: 20</h3>
+        <img data-jpel="dice2020.json"><br>
+        Size: 17.0KB (11.6KB gzipped = 7%)
+    </div>
+
+
+    <script src = "../js/JPEllucent.js"></script>
+    <script>
+        var boxes = document.getElementsByClassName('box');
+        for(var i = 0, l = boxes.length; i < l; i++) { (function(b) {
+            var jpel = b.getElementsByTagName('IMG')[0];
+            var orig = new Image();
+            var header = b.getElementsByTagName('h3')[0];
+            orig.src = 'dice.png';
+            orig.style.display = 'none';
+            b.insertBefore(orig, jpel);
+            b.addEventListener('mousedown', function(ev) {
+                header.innerText += ' [[original]]';
+                orig.style.display = 'inline';
+                jpel.style.display = 'none';
+            });
+
+            b.addEventListener('mouseup', function(ev) {
+                header.innerText = header.innerText.split(' [[original]]')[0];
+                jpel.style.display = 'inline';
+                orig.style.display = 'none';
+            });
+        })(boxes[i]);}
+    </script>
+</body>
+</html>
